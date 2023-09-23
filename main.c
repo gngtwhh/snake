@@ -15,6 +15,7 @@ int main() {
         if (c == '1') {
             initGame();//游戏数据初始化
             start();//正式开始一局游戏
+            destoryGameData();//清除游戏数据,释放空间
             system("cls");//游戏结束清屏
             printMenu();//重新打印菜单
         }
