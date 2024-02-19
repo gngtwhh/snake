@@ -1,30 +1,33 @@
-#define bool int//çº¯cè¯­è¨€,éœ€è¦å®å®šä¹‰boolç±»å‹
+#define bool int//´¿cÓïÑÔ,ĞèÒªºê¶¨ÒåboolÀàĞÍ
 #define false 0
 #define true 1
 
-//main nemu---ä¸»èœå•
-void printMenu();//æ‰“å°èœå•ç•Œé¢
-void initGame();//åˆå§‹åŒ–æ¸¸æˆæ•°æ®æ€»æ§åˆ¶å‡½æ•°
-void wrongInput();//èœå•é€‰æ‹©é”™è¯¯è¾“å…¥å¤„ç†
-//void showRank();æ˜¾ç¤ºåˆ†æ•°æ’è¡Œ,æš‚æœªå®ç°
+//main nemu---Ö÷²Ëµ¥
+void printMenu();//´òÓ¡²Ëµ¥½çÃæ
+void initGame();//³õÊ¼»¯ÓÎÏ·Êı¾İ×Ü¿ØÖÆº¯Êı
+void wrongInput();//²Ëµ¥Ñ¡Ôñ´íÎóÊäÈë´¦Àí
+//void showRank();ÏÔÊ¾·ÖÊıÅÅĞĞ,ÔİÎ´ÊµÏÖ
 
-//starting---å„ä¸ªæ¸¸æˆæ•°æ®åˆå§‹åŒ–å‡½æ•°
-void printBox();//æ‰“å°åœ°å›¾
-void initSnakeAndApple();//åˆå§‹åŒ–è›‡å’Œè‹¹æœ
-void setDifficulty();//è®¾ç½®æ¸¸æˆéš¾åº¦
+//starting---¸÷¸öÓÎÏ·Êı¾İ³õÊ¼»¯º¯Êı
+void printBox();//´òÓ¡µØÍ¼
+void initSnakeAndApple();//³õÊ¼»¯ÉßºÍÆ»¹û
+void setDifficulty();//ÉèÖÃÓÎÏ·ÄÑ¶È
 
-//game begin---æ¸¸æˆé€»è¾‘ä¸»ä½“
-void start();//æ¸¸æˆä¸»å¾ªç¯(æ€»æ§åˆ¶)
-bool againstTheWall();//æ£€æŸ¥è›‡æ˜¯å¦æ’å¢™
-bool againstSelf();//æ£€æŸ¥è›‡æ˜¯å¦æ’åˆ°è‡ªå·±
-void gameover();//æ¸¸æˆç»“æŸå¤„ç†
-void gamewin();//æ¸¸æˆèƒœåˆ©ç•Œé¢
-void moveSnake(int);//ç§»åŠ¨è›‡
-void snakeGrowth();//åƒåˆ°è‹¹æœæ—¶è›‡å¢é•¿
-bool isOverlap();//ç”Ÿæˆè‹¹æœæ—¶æ£€æŸ¥æ˜¯å¦é”™è¯¯åœ°ç”Ÿæˆåœ¨è›‡èº«ä½“ä¸Š
-void destoryGameData();//å½“å‰ä¸€å±€æ¸¸æˆç»“æŸæ—¶é‡Šæ”¾ç©ºé—´
+//game begin---ÓÎÏ·Âß¼­Ö÷Ìå
+void start();//ÓÎÏ·Ö÷Ñ­»·(×Ü¿ØÖÆ)
+bool againstTheWall();//¼ì²éÉßÊÇ·ñ×²Ç½
+bool againstSelf();//¼ì²éÉßÊÇ·ñ×²µ½×Ô¼º
+void gameover();//ÓÎÏ·½áÊø´¦Àí
+void gamewin();//ÓÎÏ·Ê¤Àû½çÃæ
+void moveSnake(int);//ÒÆ¶¯Éß
+void snakeGrowth();//³Ôµ½Æ»¹ûÊ±ÉßÔö³¤
+bool isOverlap();//Éú³ÉÆ»¹ûÊ±¼ì²éÊÇ·ñ´íÎóµØÉú³ÉÔÚÉßÉíÌåÉÏ
+void destoryGameData();//µ±Ç°Ò»¾ÖÓÎÏ·½áÊøÊ±ÊÍ·Å¿Õ¼ä
 
-//system---ç³»ç»Ÿç›¸å…³çš„å‡½æ•°
-void gotoxy(int, int);//å…‰æ ‡é‡å®šä½
-void color(int);//è®¾ç½®æ‰“å°é¢œè‰²
-int keyboard(int);//æ— ç¼“å†²é”®ç›˜è¾“å…¥æ”¯æŒ
+//system---ÏµÍ³Ïà¹ØµÄº¯Êı
+void gotoxy(int, int);//¹â±êÖØ¶¨Î»
+void color(int);//ÉèÖÃ´òÓ¡ÑÕÉ«
+int keyboard(int);//ÎŞ»º³å¼üÅÌÊäÈëÖ§³Ö
+int getWindowSizeX();//»ñÈ¡¿ØÖÆÌ¨´°¿Ú¿í¶È
+int getWindowSizeY();//»ñÈ¡¿ØÖÆÌ¨´°¿Ú¸ß¶È
+int min_between(int a, int b);//·µ»ØÁ½¸öÊıÖĞ½ÏĞ¡µÄÄÇ¸ö

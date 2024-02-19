@@ -5,41 +5,46 @@
 #include <time.h>
 #include "snake.h"
 
-//æ¸¸æˆæ•°æ®
+//ÓÎÏ·Êı¾İ
 typedef struct snake {
     int x, y;
     struct snake *prior, *next;
-} snake;//è›‡èº«ä½“çš„ä¸€ä¸ªç»“ç‚¹çš„ç±»å‹
-snake *head, *tail;//æŒ‡å‘è›‡å¤´å’Œè›‡å°¾ç»“ç‚¹çš„æŒ‡é’ˆ
+} snake;//ÉßÉíÌåµÄÒ»¸ö½áµãµÄÀàĞÍ
+snake *head, *tail;//Ö¸ÏòÉßÍ·ºÍÉßÎ²½áµãµÄÖ¸Õë
 
 struct APPLE {
     int x, y;
-} apple;//è‹¹æœçš„åæ ‡æ•°æ®
+} apple;//Æ»¹ûµÄ×ø±êÊı¾İ
 
-int score, pre_x, pre_y, wait = 500;//å¾—åˆ†;å‰ä¸€ä¸ªx,yåæ ‡;ç­‰å¾…æ—¶é•¿(å’Œæ¸¸æˆéš¾åº¦æœ‰å…³---æ”¹å˜è›‡ç§»åŠ¨çš„é€Ÿåº¦)
-int HEIGHT = 30;//åœ°å›¾é«˜åº¦
-int WIDTH = 30;//åœ°å›¾å®½åº¦
-int curSnakeLen = 0;//å½“å‰çš„è›‡èº«é•¿åº¦
-int maxSnakeLen = 0;//åœ°å›¾èƒ½å®¹çº³çš„æœ€å¤§è›‡èº«é•¿åº¦,è¾¾åˆ°è¿™ä¸ªé•¿åº¦æ„å‘³ç€æ¸¸æˆèƒœåˆ©
+int score, pre_x, pre_y, wait = 500;//µÃ·Ö;Ç°Ò»¸öx,y×ø±ê;µÈ´ıÊ±³¤(ºÍÓÎÏ·ÄÑ¶ÈÓĞ¹Ø---¸Ä±äÉßÒÆ¶¯µÄËÙ¶È)
+int HEIGHT = 30;//µØÍ¼¸ß¶È
+int WIDTH = 30;//µØÍ¼¿í¶È
+int curSnakeLen = 0;//µ±Ç°µÄÉßÉí³¤¶È
+int maxSnakeLen = 0;//µØÍ¼ÄÜÈİÄÉµÄ×î´óÉßÉí³¤¶È,´ïµ½Õâ¸ö³¤¶ÈÒâÎ¶×ÅÓÎÏ·Ê¤Àû
 
 //starting
 void printBox() {
     bool flag = 1;
     int n;
-    //ç”¨æˆ·è‡ªå®šä¹‰åœ°å›¾å¤§å°,å¹¶è¿›è¡Œè®¡ç®—åº”è¯¥ç”Ÿæˆçš„å„é¡¹æ•°æ®
+    int cur_console_x = getWindowSizeX();
+    int cur_console_y = getWindowSizeY();
+    // printf("x:%d,y:%d", x, y);
+    //ÓÃ»§×Ô¶¨ÒåµØÍ¼´óĞ¡,²¢½øĞĞ¼ÆËãÓ¦¸ÃÉú³ÉµÄ¸÷ÏîÊı¾İ
     gotoxy(0, 0);
-    printf("è¯·è¾“å…¥åœ°å›¾å¤§å°(èŒƒå›´15~30,åŒ…æ‹¬è¾¹ç•Œ,æŒ‰å›è½¦é”®ç¡®è®¤):\n");
-    printf("è¯·è¾“å…¥å®½åº¦:");
+    printf("ÇëÊäÈëµØÍ¼´óĞ¡(°üÀ¨±ß½ç,°´»Ø³µ¼üÈ·ÈÏ):\n");
+    printf("ÇëÊäÈë¿í¶È(·¶Î§%d~%d):", min_between(cur_console_x / 4, 15),
+           cur_console_x / 2);
     while (flag) {
-        if (scanf("%d", &n) && n >= 15 && n <= 30) {
+        if (scanf("%d", &n) && n >= min_between(cur_console_x / 4, 15) &&
+            n <= cur_console_x / 2) {
             flag = 0;
             WIDTH = n;
         } else {
             system("cls");
             gotoxy(0, 0);
-            printf("è¯·è¾“å…¥å®½åº¦:");
+            printf("ÇëÊäÈë¿í¶È:");
             gotoxy(0, 1);
-            printf("è¾“å…¥é”™è¯¯!");
+            printf("ÊäÈë´íÎó!");
             gotoxy(11, 0);
             rewind(stdin);
         }
@@ -48,59 +53,62 @@ void printBox() {
     system("cls");
 
     gotoxy(0, 0);
-    printf("è¯·è¾“å…¥é«˜åº¦:");
+    printf("ÇëÊäÈë¸ß¶È:(·¶Î§%d~%d):", min_between(cur_console_y / 2 - 1, 15),
+           cur_console_y - 1);
     flag = 1;
     while (flag) {
-        if (scanf("%d", &n) && n >= 15 && n <= 30) {
+        if (scanf("%d", &n) && n >= min_between(cur_console_y / 2 - 1, 15) &&
+            n <= cur_console_y - 1) {
             flag = 0;
             HEIGHT = n;
         } else {
             system("cls");
             gotoxy(0, 0);
-            printf("è¯·è¾“å…¥é«˜åº¦:");
+            printf("ÇëÊäÈë¸ß¶È:");
             gotoxy(0, 1);
-            printf("è¾“å…¥é”™è¯¯!");
+            printf("ÊäÈë´íÎó!");
             gotoxy(11, 0);
             rewind(stdin);
         }
     }
 
-    //+=2çš„åŸå› æ˜¯æ–¹å—å­—ç¬¦å¹¶éASCIIå­—ç¬¦,å ç”¨ä¸¤ä¸ªå­—èŠ‚å¤§å°---åæ ‡æ¯æ¬¡éœ€è¦+2è€Œä¸æ˜¯+1
-    //æ‰“å°å›´å¢™
+
+    //+=2µÄÔ­ÒòÊÇ·½¿é×Ö·û²¢·ÇASCII×Ö·û,Õ¼ÓÃÁ½¸ö×Ö½Ú´óĞ¡---×ø±êÃ¿´ÎĞèÒª+2¶ø²»ÊÇ+1
+    //´òÓ¡Î§Ç½
     system("cls");
-    for (int i = 0; i < WIDTH * 2; i += 2) {//ä¸Šä¸‹
+    for (int i = 0; i < WIDTH * 2; i += 2) {//ÉÏÏÂ
         gotoxy(i, 0);
-        printf("â–¡");
+        printf("¡õ");
         gotoxy(i, HEIGHT - 1);
-        printf("â–¡");
+        printf("¡õ");
     }
-    for (int i = 1; i <= HEIGHT - 1; i++) {//å·¦å³
+    for (int i = 1; i <= HEIGHT - 1; i++) {//×óÓÒ
         gotoxy(0, i);
-        printf("â–¡");
+        printf("¡õ");
         gotoxy(WIDTH * 2 - 2, i);
-        printf("â–¡");
+        printf("¡õ");
     }
-    //æ‰“å°ç›’å­å†…éƒ¨
+    //´òÓ¡ºĞ×ÓÄÚ²¿
     color(7);
     for (int j = 1; j <= HEIGHT - 2; j++) {
         for (int i = 2; i < WIDTH * 2 - 2; i += 2) {
             gotoxy(i, j);
-            printf("â–¡");
+            printf("¡õ");
         }
         putchar('\n');
     }
 }
 
-void initSnakeAndApple() {//ç¼ºé™·:æ­¤å‡½æ•°æœªå¤„ç†mallocå¯èƒ½çš„é”™è¯¯
-    //åˆå§‹åŒ–æ•°æ®
-    //ä»¥åŒå‘é“¾è¡¨å­˜å‚¨æ•´æ¡è›‡,æ–¹ä¾¿è¿›è¡Œå‘å‰/å‘åéå†
+void initSnakeAndApple() {//È±Ïİ:´Ëº¯ÊıÎ´´¦Àímalloc¿ÉÄÜµÄ´íÎó
+    //³õÊ¼»¯Êı¾İ
+    //ÒÔË«ÏòÁ´±í´æ´¢ÕûÌõÉß,·½±ã½øĞĞÏòÇ°/Ïòºó±éÀú
 
-    //åˆ›å»ºè›‡å¤´
+    //´´½¨ÉßÍ·
     head = (snake *) malloc(sizeof(snake));
     head->next = head->prior = NULL;
     head->x = 16;
     head->y = 4;
-    //åˆ›å»ºå‰©ä½™3ä¸ªæ™®é€šè›‡èº«ç»“ç‚¹---æ¸¸æˆå¼€å±€è›‡çš„é•¿åº¦é»˜è®¤ä¸º4
+    //´´½¨Ê£Óà3¸öÆÕÍ¨ÉßÉí½áµã---ÓÎÏ·¿ª¾ÖÉßµÄ³¤¶ÈÄ¬ÈÏÎª4
     snake *temp = head;
     for (int i = 1; i <= 3; ++i) {
         temp->next = (snake *) malloc(sizeof(snake));
@@ -112,31 +120,31 @@ void initSnakeAndApple() {//ç¼ºé™·:æ­¤å‡½æ•°æœªå¤„ç†mallocå¯èƒ½çš„é”™è¯¯
     }
     temp->next = NULL;
     tail = temp;
-    curSnakeLen = 4;//åˆå§‹æ—¶è›‡çš„é•¿åº¦ä¸º4
-    maxSnakeLen = (WIDTH - 2) * (HEIGHT - 2);//æ ¹æ®åœ°å›¾å¤§å°è®¡ç®—æ¸¸æˆèƒœåˆ©è›‡åº”è¯¥è¾¾åˆ°çš„é•¿åº¦
+    curSnakeLen = 4;//³õÊ¼Ê±ÉßµÄ³¤¶ÈÎª4
+    maxSnakeLen = (WIDTH - 2) * (HEIGHT - 2);//¸ù¾İµØÍ¼´óĞ¡¼ÆËãÓÎÏ·Ê¤ÀûÉßÓ¦¸Ã´ïµ½µÄ³¤¶È
 
-    //æ‰“å°è›‡å¤´
+    //´òÓ¡ÉßÍ·
     temp = head;
     color(2);
     gotoxy(temp->x, temp->y);
-    printf("â– ");
-    //æ‰“å°è›‡èº«
+    printf("¡ö");
+    //´òÓ¡ÉßÉí
     temp = temp->next;
     color(6);
     while (NULL != temp) {
         gotoxy(temp->x, temp->y);
-        printf("â– ");
+        printf("¡ö");
         temp = temp->next;
     }
 
-    //åˆå§‹åŒ–è‹¹æœå¹¶æ‰“å°---æ¸¸æˆå¼€å±€ç¬¬ä¸€ä¸ªè‹¹æœçš„ä½ç½®é»˜è®¤ä¸º(8,4)
+    //³õÊ¼»¯Æ»¹û²¢´òÓ¡---ÓÎÏ·¿ª¾ÖµÚÒ»¸öÆ»¹ûµÄÎ»ÖÃÄ¬ÈÏÎª(8,4)
     apple.x = 8;
     apple.y = 4;
     color(4);
     gotoxy(8, 4);
-    printf("â– ");
+    printf("¡ö");
 
-    //è®°å½•è›‡å°¾
+    //¼ÇÂ¼ÉßÎ²
     pre_x = tail->x;
     pre_y = tail->y;
     return;
@@ -144,107 +152,107 @@ void initSnakeAndApple() {//ç¼ºé™·:æ­¤å‡½æ•°æœªå¤„ç†mallocå¯èƒ½çš„é”™è¯¯
 
 void setDifficulty() {
     bool flag = 1;
-    int n, difficulties[6] = {0, 1000, 800, 600, 400, 200};//5ç§æ¸¸æˆéš¾åº¦---å¯¹åº”ä¸åŒçš„ç­‰å¾…æ—¶é—´
-    gotoxy(0, 0);//æ¯æ¬¡çš„è·³è½¬éƒ½æ˜¯æ ¹æ®æç¤ºä¿¡æ¯è®¡ç®—å¥½çš„,ä¸èƒ½è½»æ˜“æ”¹åŠ¨
-    printf("è¯·è¾“å…¥éš¾åº¦[1~5](æŒ‰å›è½¦é”®ç¡®è®¤):");
+    int n, difficulties[6] = {0, 1000, 800, 600, 400, 200};//5ÖÖÓÎÏ·ÄÑ¶È---¶ÔÓ¦²»Í¬µÄµÈ´ıÊ±¼ä
+    gotoxy(0, 0);//Ã¿´ÎµÄÌø×ª¶¼ÊÇ¸ù¾İÌáÊ¾ĞÅÏ¢¼ÆËãºÃµÄ,²»ÄÜÇáÒ×¸Ä¶¯
+    printf("ÇëÊäÈëÄÑ¶È[1~5](°´»Ø³µ¼üÈ·ÈÏ):");
     while (flag) {
         if (scanf("%d", &n) && n > 0 && n < 6)
-            flag = 0;//è¾“å…¥æˆåŠŸåˆ™è·³å‡ºå¾ªç¯
+            flag = 0;//ÊäÈë³É¹¦ÔòÌø³öÑ­»·
         else {
             system("cls");
             gotoxy(0, 0);
-            printf("è¯·è¾“å…¥éš¾åº¦[1~5](æŒ‰å›è½¦é”®ç¡®è®¤):");
+            printf("ÇëÊäÈëÄÑ¶È[1~5](°´»Ø³µ¼üÈ·ÈÏ):");
             gotoxy(0, 1);
-            printf("è¾“å…¥é”™è¯¯!");
+            printf("ÊäÈë´íÎó!");
             gotoxy(30, 0);
             rewind(stdin);
         }
     }
     //wait = 1100 - n * 200;
-    wait = difficulties[n];//è®¾ç½®ç­‰å¾…æ—¶é—´
+    wait = difficulties[n];//ÉèÖÃµÈ´ıÊ±¼ä
 
-    //åˆå§‹åŒ–åˆ†æ•°
+    //³õÊ¼»¯·ÖÊı
     score = 0;
 
-    rewind(stdin);//åˆ·æ–°ç¼“å†²åŒº
-    system("cls");//æ¸…å±
+    rewind(stdin);//Ë¢ĞÂ»º³åÇø
+    system("cls");//ÇåÆÁ
     return;
 }
 
 //game bejin
 void start() {
-    int flag = 2, flag2;//åˆå§‹å‘å·¦è¿åŠ¨
+    int flag = 2, flag2;//³õÊ¼Ïò×óÔË¶¯
     bool pause_game = false;
-    //æ‰“å°æç¤ºåŒºåŸŸ
+    //´òÓ¡ÌáÊ¾ÇøÓò
     gotoxy(WIDTH * 2 + 4, 3);
     color(7);
-    printf("wasdæ§åˆ¶,ç©ºæ ¼é”®æš‚åœ");
+    printf("wasd¿ØÖÆ,¿Õ¸ñ¼üÔİÍ£");
     gotoxy(WIDTH * 2 + 4, 5);
     printf("score:");
 
     while (1) {
-        if (againstTheWall() || againstSelf()) {//åˆ¤æ–­æ¸¸æˆç»“æŸ
-            gameover();//è¿›è¡Œæ¸¸æˆç»“æŸçš„å¤„ç†
-            return;//å¤„ç†å®Œæ¯•åç»“æŸè¿™ä¸€å±€çš„æ¸¸æˆ,è·³è½¬å›ä¸»æ§åˆ¶å¾ªç¯
+        if (againstTheWall() || againstSelf()) {//ÅĞ¶ÏÓÎÏ·½áÊø
+            gameover();//½øĞĞÓÎÏ·½áÊøµÄ´¦Àí
+            return;//´¦ÀíÍê±Ïºó½áÊøÕâÒ»¾ÖµÄÓÎÏ·,Ìø×ª»ØÖ÷¿ØÖÆÑ­»·
         }
-        //æ‰“å°å½“å‰æˆç»©
+        //´òÓ¡µ±Ç°³É¼¨
         gotoxy(WIDTH * 2 + 10, 5);
         color(7);
         printf("%d", score);
-        //è›‡è¿åŠ¨
-        flag2 = flag;//ä¿å­˜å½“å‰çš„å‰è¿›æ–¹å‘
-        flag = keyboard(flag);//è·å–æ–°çš„(å¯èƒ½å‘ç”Ÿæ”¹å˜çš„)ç§»åŠ¨æ–¹å‘
+        //ÉßÔË¶¯
+        flag2 = flag;//±£´æµ±Ç°µÄÇ°½ø·½Ïò
+        flag = keyboard(flag);//»ñÈ¡ĞÂµÄ(¿ÉÄÜ·¢Éú¸Ä±äµÄ)ÒÆ¶¯·½Ïò
         if (flag <= 4)
             moveSnake(flag);
-        else if (flag == 5) {//5ä»£è¡¨è¾“å…¥äº†ç©ºæ ¼,æ„å‘³ç€æš‚åœæ¸¸æˆ
-            pause_game = true;//è®¾ç½®æš‚åœæ ‡å¿—ä½
-            flag = flag2;//å‰è¿›æ–¹å‘é‡ç½®ä¸ºåŸæ¥çš„æ–¹å‘
+        else if (flag == 5) {//5´ú±íÊäÈëÁË¿Õ¸ñ,ÒâÎ¶×ÅÔİÍ£ÓÎÏ·
+            pause_game = true;//ÉèÖÃÔİÍ£±êÖ¾Î»
+            flag = flag2;//Ç°½ø·½ÏòÖØÖÃÎªÔ­À´µÄ·½Ïò
         }
-        if (head->x == apple.x && head->y == apple.y) {//åƒåˆ°è‹¹æœ
-            snakeGrowth();//è›‡é•¿é•¿
+        if (head->x == apple.x && head->y == apple.y) {//³Ôµ½Æ»¹û
+            snakeGrowth();//Éß³¤³¤
 
             if (curSnakeLen == maxSnakeLen) {
-                gamewin();//æ¸¸æˆèƒœåˆ©
+                gamewin();//ÓÎÏ·Ê¤Àû
                 return;
             }
-            //è¿›è¡Œä¸‹ä¸€ä¸ªè‹¹æœçš„ç”Ÿæˆ(éšæœº)
+            //½øĞĞÏÂÒ»¸öÆ»¹ûµÄÉú³É(Ëæ»ú)
             srand((unsigned int) time(NULL));
             do {
                 apple.x = ((rand() % (WIDTH - 2)) + 1) * 2;
                 apple.y = (rand() % (HEIGHT - 2)) + 1;
-            } while (isOverlap());//ç›´åˆ°è‹¹æœç”Ÿæˆåœ¨æ­£ç¡®çš„(æ²¡æœ‰ç”Ÿæˆåœ¨è›‡èº«ä½“ä¸Š---éœ€è¦å¯¹è›‡çš„é“¾è¡¨è¿›è¡Œéå†)ä½ç½®
-            gotoxy(apple.x, apple.y);//è·³è½¬åˆ°è¯¥åæ ‡å¹¶è¿›è¡Œæ‰“å°è‹¹æœ
+            } while (isOverlap());//Ö±µ½Æ»¹ûÉú³ÉÔÚÕıÈ·µÄ(Ã»ÓĞÉú³ÉÔÚÉßÉíÌåÉÏ---ĞèÒª¶ÔÉßµÄÁ´±í½øĞĞ±éÀú)Î»ÖÃ
+            gotoxy(apple.x, apple.y);//Ìø×ªµ½¸Ã×ø±ê²¢½øĞĞ´òÓ¡Æ»¹û
             color(4);
-            printf("â– ");
-            score++;//åˆ†æ•°+1
+            printf("¡ö");
+            score++;//·ÖÊı+1
         }
-        if (pause_game) {//å¦‚æœæš‚åœæ ‡å¿—ä½è®¾ç½®ä¸ºtrueåˆ™æš‚åœæ¸¸æˆ
+        if (pause_game) {//Èç¹ûÔİÍ£±êÖ¾Î»ÉèÖÃÎªtrueÔòÔİÍ£ÓÎÏ·
             gotoxy(WIDTH * 2 + 4, 4);
             color(7);
             printf("pause    ");
             char c;
-            while (c = _getch() != ' ');//æš‚åœçš„æ­»å¾ªç¯---ç›´åˆ°é”®å…¥ç©ºæ ¼,è·³å‡ºå¾ªç¯,æ¸¸æˆç»§ç»­
+            while ((c = _getch()) != ' ');//ÔİÍ£µÄËÀÑ­»·---Ö±µ½¼üÈë¿Õ¸ñ,Ìø³öÑ­»·,ÓÎÏ·¼ÌĞø
             rewind(stdin);
             pause_game = false;
             gotoxy(WIDTH * 2 + 4, 4);
             color(7);
-            printf("          ");//è¦†ç›–æš‚åœæç¤ºä¿¡æ¯
+            printf("          ");//¸²¸ÇÔİÍ£ÌáÊ¾ĞÅÏ¢
         }
-        Sleep(wait);//ç­‰å¾…ä¸€æ®µæ—¶é—´å†ç»§ç»­è¿è¡Œ
-        rewind(stdin);//åˆ·æ–°æ¸¸æˆç¼“å†²åŒº
+        Sleep(wait);//µÈ´ıÒ»¶ÎÊ±¼äÔÙ¼ÌĞøÔËĞĞ
+        rewind(stdin);//Ë¢ĞÂÓÎÏ·»º³åÇø
     }
 }
 
-bool againstTheWall() {//æ£€æŸ¥æ’å¢™å³æ£€æŸ¥è›‡å¤´çš„åæ ‡æ˜¯å¦å’Œå¢™å£çš„åæ ‡é‡åˆ
+bool againstTheWall() {//¼ì²é×²Ç½¼´¼ì²éÉßÍ·µÄ×ø±êÊÇ·ñºÍÇ½±ÚµÄ×ø±êÖØºÏ
     if (head->x == 0 || head->x == WIDTH * 2 - 2 ||
         head->y == 0 || head->y == HEIGHT - 1)
         return true;
     return false;
 }
 
-bool againstSelf() {//æ£€æŸ¥æ’åˆ°è‡ªå·±å³æ£€æŸ¥è›‡å¤´çš„åæ ‡æ˜¯å¦å’Œä»»ä¸€è›‡èº«çš„åæ ‡é‡åˆ
+bool againstSelf() {//¼ì²é×²µ½×Ô¼º¼´¼ì²éÉßÍ·µÄ×ø±êÊÇ·ñºÍÈÎÒ»ÉßÉíµÄ×ø±êÖØºÏ
     snake *temp = head->next;
-    while (temp != NULL) {//å¯¹é“¾è¡¨è¿›è¡Œéå†
+    while (temp != NULL) {//¶ÔÁ´±í½øĞĞ±éÀú
         if (head->x == temp->x && head->y == temp->y)
             return true;
         temp = temp->next;
@@ -252,17 +260,17 @@ bool againstSelf() {//æ£€æŸ¥æ’åˆ°è‡ªå·±å³æ£€æŸ¥è›‡å¤´çš„åæ ‡æ˜¯å¦å’Œä»»ä¸€è
     return false;
 }
 
-void gameover() {//æ¸¸æˆç»“æŸçš„å¤„ç†
+void gameover() {//ÓÎÏ·½áÊøµÄ´¦Àí
     system("cls");
     const char *endInterface[8] = {
             "        _______________________________________________\n",
             "        |                                             |\n",
-            "        |        æ¸¸æˆç»“æŸ:                            |\n",
-            "        |        åˆ†æ•°:",
+            "        |        ÓÎÏ·½áÊø:                            |\n",
+            "        |        ·ÖÊı:",
             "\n",
             "        |                                             |\n",
             "        -----------------------------------------------\n",
-            "                    æŒ‰ç©ºæ ¼é”®ç¡®è®¤:[ ]"
+            "                    °´¿Õ¸ñ¼üÈ·ÈÏ:[ ]"
     };
     for (int i = 0; i < 4; ++i) {
         color(i + 2);
@@ -277,21 +285,21 @@ void gameover() {//æ¸¸æˆç»“æŸçš„å¤„ç†
     }
     gotoxy(34, 6);
     char c;
-    while (c = _getch() != ' ');//ç›´åˆ°é”®å…¥ç©ºæ ¼æ‰ä¼šè¿”å›
+    while ((c = _getch()) != ' ');//Ö±µ½¼üÈë¿Õ¸ñ²Å»á·µ»Ø
 }
 
-//ä»£ç å†—ä½™,å°šæœªä¼˜åŒ–
-void gamewin() {//æ¸¸æˆèƒœåˆ©çš„å¤„ç†
+//´úÂëÈßÓà,ÉĞÎ´ÓÅ»¯
+void gamewin() {//ÓÎÏ·Ê¤ÀûµÄ´¦Àí
     system("cls");
     const char *endInterface[8] = {
             "        _______________________________________________\n",
             "        |                                             |\n",
-            "        |        æ¸¸æˆèƒœåˆ©:                            |\n",
-            "        |        åˆ†æ•°:",
+            "        |        ÓÎÏ·Ê¤Àû:                            |\n",
+            "        |        ·ÖÊı:",
             "\n",
             "        |                                             |\n",
             "        -----------------------------------------------\n",
-            "                    æŒ‰ç©ºæ ¼é”®ç¡®è®¤:[ ]"
+            "                    °´¿Õ¸ñ¼üÈ·ÈÏ:[ ]"
     };
     for (int i = 0; i < 4; ++i) {
         color(i + 2);
@@ -306,63 +314,63 @@ void gamewin() {//æ¸¸æˆèƒœåˆ©çš„å¤„ç†
     }
     gotoxy(34, 6);
     char c;
-    while (c = _getch() != ' ');//åŒæ ·ç­‰å¾…è¾“å…¥
+    while ((c = _getch()) != ' ');//Í¬ÑùµÈ´ıÊäÈë
 }
 
-void moveSnake(int flag) {//è›‡çš„æ­£å¸¸å‰è¿›
+void moveSnake(int flag) {//ÉßµÄÕı³£Ç°½ø
     int move[4][2] = {
             {0,  -1},
             {-2, 0},
             {0,  1},
             {2,  0}
-    };//4ç§ä¸åŒçš„ç§»åŠ¨æ–¹å‘å¯¹åº”çš„4ç§åæ ‡å˜æ¢
-    flag--;//å¯¹åº”moveæ•°ç»„çš„å…ƒç´ --ä»ä¸‹æ ‡0å¼€å§‹
-    //ä¿å­˜è›‡å°¾ä½ç½®
+    };//4ÖÖ²»Í¬µÄÒÆ¶¯·½Ïò¶ÔÓ¦µÄ4ÖÖ×ø±ê±ä»»
+    flag--;//¶ÔÓ¦moveÊı×éµÄÔªËØ--´ÓÏÂ±ê0¿ªÊ¼
+    //±£´æÉßÎ²Î»ÖÃ
     pre_x = tail->x;
     pre_y = tail->y;
-    //è›‡å°¾,æ—§è›‡å¤´è¦†ç›–æ‰“å°
+    //ÉßÎ²,¾ÉÉßÍ·¸²¸Ç´òÓ¡
     gotoxy(tail->x, tail->y);
     color(7);
-    printf("â–¡");
+    printf("¡õ");
 
     gotoxy(head->x, head->y);
     color(6);
-    printf("â– ");
-    //è›‡å°¾æ–­å¼€
+    printf("¡ö");
+    //ÉßÎ²¶Ï¿ª
     snake *temp = tail;
     tail = tail->prior;
     tail->next = NULL;
-    //è›‡å°¾ç»“ç‚¹ä½œä¸ºæ–°å¤´,ä¸éœ€è¦åˆ é™¤åˆ›å»º,èŠ‚çœæ—¶é—´
+    //ÉßÎ²½áµã×÷ÎªĞÂÍ·,²»ĞèÒªÉ¾³ı´´½¨,½ÚÊ¡Ê±¼ä
     temp->next = head;
     temp->prior = NULL;
     head->prior = temp;
     head = temp;
-    //æ–°è›‡å¤´ä½ç½®è®¡ç®—å¹¶æ‰“å°
+    //ĞÂÉßÍ·Î»ÖÃ¼ÆËã²¢´òÓ¡
     head->x = head->next->x + move[flag][0];
     head->y = head->next->y + move[flag][1];
     gotoxy(head->x, head->y);
     color(2);
-    printf("â– ");
+    printf("¡ö");
 }
 
-void snakeGrowth() {//è›‡çš„é•¿åº¦å¢é•¿
-    //æ–°å¢è›‡èº«ç»“ç‚¹---å³åœ¨è›‡å°¾æ–°å¢ä¸€ä¸ªç»“ç‚¹å¹¶å³åˆ»æ‰“å°(è›‡æ­¤æ—¶å·²å‰è¿›ä¸€æ ¼ä¸”åƒåˆ°è‹¹æœ
+void snakeGrowth() {//ÉßµÄ³¤¶ÈÔö³¤
+    //ĞÂÔöÉßÉí½áµã---¼´ÔÚÉßÎ²ĞÂÔöÒ»¸ö½áµã²¢¼´¿Ì´òÓ¡(Éß´ËÊ±ÒÑÇ°½øÒ»¸ñÇÒ³Ôµ½Æ»¹û
     tail->next = (snake *) malloc(sizeof(snake));
     tail->next->prior = tail;
     tail = tail->next;
     tail->next = NULL;
     tail->x = pre_x;
     tail->y = pre_y;
-    ++curSnakeLen;//å½“å‰é•¿åº¦+1
+    ++curSnakeLen;//µ±Ç°³¤¶È+1
     gotoxy(pre_x, pre_y);
     color(6);
-    printf("â– ");//è¿›è¡Œæ‰“å°
+    printf("¡ö");//½øĞĞ´òÓ¡
     return;
 }
 
-bool isOverlap() {//æ£€æŸ¥æ–°ç”Ÿæˆçš„è‹¹æœåæ ‡æ˜¯å¦å’Œè›‡èº«çš„ä»»ä½•ä¸€ä¸ªéƒ¨ä½é‡åˆ
+bool isOverlap() {//¼ì²éĞÂÉú³ÉµÄÆ»¹û×ø±êÊÇ·ñºÍÉßÉíµÄÈÎºÎÒ»¸ö²¿Î»ÖØºÏ
     snake *temp = head;
-    while (temp != NULL) {//éå†è›‡èº«é“¾è¡¨
+    while (temp != NULL) {//±éÀúÉßÉíÁ´±í
         if (apple.x == temp->x && apple.y == temp->y)
             return true;
         temp = temp->next;
@@ -370,11 +378,11 @@ bool isOverlap() {//æ£€æŸ¥æ–°ç”Ÿæˆçš„è‹¹æœåæ ‡æ˜¯å¦å’Œè›‡èº«çš„ä»»ä½•ä¸€ä¸ª
     return false;
 }
 
-void destoryGameData() {//ä¸»è¦ä»»åŠ¡å³é”€æ¯é“¾è¡¨
+void destoryGameData() {//Ö÷ÒªÈÎÎñ¼´Ïú»ÙÁ´±í
     snake *temp = head;
     snake *next = NULL;
-    while (temp != NULL) {//éå†è›‡èº«é“¾è¡¨
-        next = temp->next;//è›‡æœ€çŸ­ä¹Ÿæœ‰4ä¸ªç»“ç‚¹,ä¸å­˜åœ¨tempå’Œtemp->nextä¸ºNULLçš„æƒ…å†µ
+    while (temp != NULL) {//±éÀúÉßÉíÁ´±í
+        next = temp->next;//Éß×î¶ÌÒ²ÓĞ4¸ö½áµã,²»´æÔÚtempºÍtemp->nextÎªNULLµÄÇé¿ö
         free(temp);
         temp = next;
     }

@@ -1,5 +1,5 @@
-//ä¸æ§åˆ¶å°ç›¸å…³çš„å‡½æ•°
-//æ§åˆ¶å…‰æ ‡ä½ç½®,å½“å‰æ‰“å°é¢œè‰²,æ£€æµ‹é”®ç›˜è¾“å…¥
+//Óë¿ØÖÆÌ¨Ïà¹ØµÄº¯Êı
+//¿ØÖÆ¹â±êÎ»ÖÃ,µ±Ç°´òÓ¡ÑÕÉ«,¼ì²â¼üÅÌÊäÈë
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
@@ -7,39 +7,57 @@
 #include "snake.h"
 
 //system
-//æ¶‰åŠåˆ°windowsçš„API
-void color(int i) {//æ›´æ”¹æ–‡å­—é¢œè‰²
-	//SetConsoleTextAttributeæ˜¯APIè®¾ç½®æ§åˆ¶å°çª—å£å­—ä½“é¢œè‰²å’ŒèƒŒæ™¯è‰²çš„å‡½æ•°
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), i);
+//Éæ¼°µ½windowsµÄAPI
+void color(int i) {//¸ü¸ÄÎÄ×ÖÑÕÉ«
+    //SetConsoleTextAttributeÊÇAPIÉèÖÃ¿ØÖÆÌ¨´°¿Ú×ÖÌåÑÕÉ«ºÍ±³¾°É«µÄº¯Êı
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), i);
 }
 
-//æ¸¸æˆä¸­æ¯æ¬¡è°ƒç”¨gotoxyæ—¶çš„å‚æ•°éƒ½æ˜¯æ ¹æ®æ¸¸æˆèœå•å­—ç¬¦ä½ç½®/å½“å‰åæ ‡è®¡ç®—å¥½ä¼ é€’è¿‡æ¥çš„
+//ÓÎÏ·ÖĞÃ¿´Îµ÷ÓÃgotoxyÊ±µÄ²ÎÊı¶¼ÊÇ¸ù¾İÓÎÏ·²Ëµ¥×Ö·ûÎ»ÖÃ/µ±Ç°×ø±ê¼ÆËãºÃ´«µİ¹ıÀ´µÄ
 void gotoxy(int x, int y) {
-	COORD c;
-	static HANDLE h;
-	h = GetStdHandle(STD_OUTPUT_HANDLE);//ä»æ ‡å‡†è®¾å¤‡è·å–å¥æŸ„
-	c.X = x;
-	c.Y = y;
-	SetConsoleCursorPosition(h, c);
+    COORD c;
+    static HANDLE h;
+    h = GetStdHandle(STD_OUTPUT_HANDLE);//´Ó±ê×¼Éè±¸»ñÈ¡¾ä±ú
+    c.X = x;
+    c.Y = y;
+    SetConsoleCursorPosition(h, c);
 }
-int keyboard(int pre) {//é”®ç›˜è¾“å…¥åˆ¤æ–­
-	char c;
-	int n = pre;
-	if (_kbhit()) {//æ£€æŸ¥æ˜¯å¦æœ‰é”®ç›˜è¾“å…¥
-		c = _getch();//å¦‚æœæœ‰,åˆ™è¿›è¡Œä¸€æ¬¡è¯»å–
-		if (c == 'w' || c == 'W')
-			n = 1;
-		else if (c == 'a' || c == 'A')
-			n = 2;
-		else if (c == 's' || c == 'S')
-			n = 3;
-		else if (c == 'd' || c == 'D')
-			n = 4;
-		else if (c == ' ')
-			n = 5;
-	}
-	rewind(stdin);//fflush(stdin); åˆ·æ–°ç¼“å†²åŒº,åœ¨VS2015ä¹‹åä¸å†èµ·ä½œç”¨(ç¼–è¯‘æˆåŠŸä½†æ— æ•ˆæœ)
-	if ((pre == 1 && n == 3) || (pre == 2 && n == 4) || (pre == 3 && n == 1) || (pre == 4 && n == 2))
-		return pre;//å¦‚æœé”®ç›˜è¦æ±‚è›‡180åº¦è½¬å‘,åˆ™è½¬å‘å¤±è´¥,è›‡ä»ç„¶æŒ‰ç…§åŸæ¥çš„æ–¹å‘å‰è¿›
-	return n;//æˆåŠŸè½¬å‘,è¿”å›ä¸‹ä¸€æ­¥å‰è¿›çš„æ–¹å‘
+
+int keyboard(int pre) {//¼üÅÌÊäÈëÅĞ¶Ï
+    char c;
+    int n = pre;
+    if (_kbhit()) {//¼ì²éÊÇ·ñÓĞ¼üÅÌÊäÈë
+        c = _getch();//Èç¹ûÓĞ,Ôò½øĞĞÒ»´Î¶ÁÈ¡
+        if (c == 'w' || c == 'W')
+            n = 1;
+        else if (c == 'a' || c == 'A')
+            n = 2;
+        else if (c == 's' || c == 'S')
+            n = 3;
+        else if (c == 'd' || c == 'D')
+            n = 4;
+        else if (c == ' ')
+            n = 5;
+    }
+    rewind(stdin);//fflush(stdin); Ë¢ĞÂ»º³åÇø,ÔÚVS2015Ö®ºó²»ÔÙÆğ×÷ÓÃ(±àÒë³É¹¦µ«ÎŞĞ§¹û)
+    if ((pre == 1 && n == 3) || (pre == 2 && n == 4) || (pre == 3 && n == 1) ||
+        (pre == 4 && n == 2))
+        return pre;//Èç¹û¼üÅÌÒªÇóÉß180¶È×ªÏò,Ôò×ªÏòÊ§°Ü,ÉßÈÔÈ»°´ÕÕÔ­À´µÄ·½ÏòÇ°½ø
+    return n;//³É¹¦×ªÏò,·µ»ØÏÂÒ»²½Ç°½øµÄ·½Ïò
+}
+
+int getWindowSizeX() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.dwSize.X;
+}
+
+int getWindowSizeY() {
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    return csbi.dwSize.Y;
+}
+
+int min_between(int a, int b) {
+    return a < b ? a : b;
 }
