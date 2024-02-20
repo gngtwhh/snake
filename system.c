@@ -7,17 +7,28 @@
 #include "snake.h"
 
 //system
-//使用ANSI终端控制码来控制
+//使用ANSI终端控制码来控制,设置打印颜色
+void color(int fore, int back) {
+    if (fore < 0 && back < 0)
+        return;
+    else if(fore < 0)
+        printf("\033[0;%dm", back + 40);
+    else if(back < 0)
+        printf("\033[0;%dm", fore + 30);
+    else
+        printf("\033[0;%d;%dm", fore + 30, back + 40);
+}
 
+//重置打印颜色
+void resetColor() {
+    printf("\033[0m");
+}
 
 //游戏中每次调用gotoxy时的参数都是根据游戏菜单字符位置/当前坐标计算好传递过来的
+//使用ANSI终端控制码来控制
 void gotoxy(int x, int y) {
-    COORD c;
-    static HANDLE h;
-    h = GetStdHandle(STD_OUTPUT_HANDLE);//从标准设备获取句柄
-    c.X = x;
-    c.Y = y;
-    SetConsoleCursorPosition(h, c);
+    printf("\033[%d;%dH", y+1, x+1); // 注意x和y的顺序
+    // 主调函数的坐标是从0开始的,而控制台的坐标是从1开始的
 }
 
 int keyboard(int pre) {//键盘输入判断

@@ -1,6 +1,6 @@
 /*
 更新内容:
-	补全大量注释,并进行一些细节的修改,修复内存泄漏的漏洞(未销毁链表)
+    补全大量注释,并进行一些细节的修改,修复内存泄漏的漏洞(未销毁链表)
 */
 #include <stdio.h>
 #include <conio.h>
@@ -18,14 +18,12 @@ int main() {
             destoryGameData();//清除游戏数据,释放空间
             system("cls");//游戏结束清屏
             printMenu();//重新打印菜单
-        }
-        else if (c == '2') {
-            color(7);//将颜色设置回白色
+        } else if (c == '2') {
+            color(7,-1);//将颜色设置回白色
             gotoxy(0, 18);
             printf("游戏结束!\n");
             break;//跳出循环,结束游戏
-        }
-        else wrongInput();//输入非法,打印错误信息
+        } else wrongInput();//输入非法,打印错误信息
     }
     return 0;
 }

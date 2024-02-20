@@ -33,7 +33,7 @@ void printBox() {
     gotoxy(0, 0);
     printf("请输入地图大小(包括边界,按回车键确认):\n");
     printf("请输入宽度(范围%d~%d):", min_between(cur_console_x / 4, 15),
-           cur_console_x / 2);
+        cur_console_x / 2);
     while (flag) {
         if (scanf("%d", &n) && n >= min_between(cur_console_x / 4, 15) &&
             n <= cur_console_x / 2) {
@@ -54,7 +54,7 @@ void printBox() {
 
     gotoxy(0, 0);
     printf("请输入高度:(范围%d~%d):", min_between(cur_console_y / 2 - 1, 15),
-           cur_console_y - 1);
+        cur_console_y - 1);
     flag = 1;
     while (flag) {
         if (scanf("%d", &n) && n >= min_between(cur_console_y / 2 - 1, 15) &&
@@ -89,7 +89,7 @@ void printBox() {
         printf("□");
     }
     //打印盒子内部
-    color(7);
+    color(7,-1);
     for (int j = 1; j <= HEIGHT - 2; j++) {
         for (int i = 2; i < WIDTH * 2 - 2; i += 2) {
             gotoxy(i, j);
@@ -104,14 +104,14 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
     //以双向链表存储整条蛇,方便进行向前/向后遍历
 
     //创建蛇头
-    head = (snake *) malloc(sizeof(snake));
+    head = (snake *)malloc(sizeof(snake));
     head->next = head->prior = NULL;
     head->x = 16;
     head->y = 4;
     //创建剩余3个普通蛇身结点---游戏开局蛇的长度默认为4
     snake *temp = head;
     for (int i = 1; i <= 3; ++i) {
-        temp->next = (snake *) malloc(sizeof(snake));
+        temp->next = (snake *)malloc(sizeof(snake));
         temp->next->prior = temp;
         temp = temp->next;
 
@@ -125,12 +125,12 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
 
     //打印蛇头
     temp = head;
-    color(2);
+    color(2,-1);
     gotoxy(temp->x, temp->y);
     printf("■");
     //打印蛇身
     temp = temp->next;
-    color(6);
+    color(6,-1);
     while (NULL != temp) {
         gotoxy(temp->x, temp->y);
         printf("■");
@@ -140,7 +140,7 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
     //初始化苹果并打印---游戏开局第一个苹果的位置默认为(8,4)
     apple.x = 8;
     apple.y = 4;
-    color(4);
+    color(4,-1);
     gotoxy(8, 4);
     printf("■");
 
@@ -152,7 +152,7 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
 
 void setDifficulty() {
     bool flag = 1;
-    int n, difficulties[6] = {0, 1000, 800, 600, 400, 200};//5种游戏难度---对应不同的等待时间
+    int n, difficulties[6] = { 0, 1000, 800, 600, 400, 200 };//5种游戏难度---对应不同的等待时间
     gotoxy(0, 0);//每次的跳转都是根据提示信息计算好的,不能轻易改动
     printf("请输入难度[1~5](按回车键确认):");
     while (flag) {
@@ -185,7 +185,7 @@ void start() {
     bool pause_game = false;
     //打印提示区域
     gotoxy(WIDTH * 2 + 4, 3);
-    color(7);
+    color(7,-1);
     printf("wasd控制,空格键暂停");
     gotoxy(WIDTH * 2 + 4, 5);
     printf("score:");
@@ -197,7 +197,7 @@ void start() {
         }
         //打印当前成绩
         gotoxy(WIDTH * 2 + 10, 5);
-        color(7);
+        color(7,-1);
         printf("%d", score);
         //蛇运动
         flag2 = flag;//保存当前的前进方向
@@ -216,26 +216,26 @@ void start() {
                 return;
             }
             //进行下一个苹果的生成(随机)
-            srand((unsigned int) time(NULL));
+            srand((unsigned int)time(NULL));
             do {
                 apple.x = ((rand() % (WIDTH - 2)) + 1) * 2;
                 apple.y = (rand() % (HEIGHT - 2)) + 1;
             } while (isOverlap());//直到苹果生成在正确的(没有生成在蛇身体上---需要对蛇的链表进行遍历)位置
             gotoxy(apple.x, apple.y);//跳转到该坐标并进行打印苹果
-            color(4);
+            color(4,-1);
             printf("■");
             score++;//分数+1
         }
         if (pause_game) {//如果暂停标志位设置为true则暂停游戏
             gotoxy(WIDTH * 2 + 4, 4);
-            color(7);
+            color(7,-1);
             printf("pause    ");
             char c;
             while ((c = _getch()) != ' ');//暂停的死循环---直到键入空格,跳出循环,游戏继续
             rewind(stdin);
             pause_game = false;
             gotoxy(WIDTH * 2 + 4, 4);
-            color(7);
+            color(7,-1);
             printf("          ");//覆盖暂停提示信息
         }
         Sleep(wait);//等待一段时间再继续运行
@@ -273,14 +273,14 @@ void gameover() {//游戏结束的处理
             "                    按空格键确认:[ ]"
     };
     for (int i = 0; i < 4; ++i) {
-        color(i + 2);
+        color(i + 2,-1);
         printf("%s", endInterface[i]);
     }
     printf("%d", score);
     gotoxy(54, 3);
     putchar('|');
     for (int i = 4; i < 8; ++i) {
-        color(i + 2);
+        color(i + 2,-1);
         printf("%s", endInterface[i]);
     }
     gotoxy(34, 6);
@@ -302,14 +302,14 @@ void gamewin() {//游戏胜利的处理
             "                    按空格键确认:[ ]"
     };
     for (int i = 0; i < 4; ++i) {
-        color(i + 2);
+        color(i + 2,-1);
         printf("%s", endInterface[i]);
     }
     printf("%d", score);
     gotoxy(54, 3);
     putchar('|');
     for (int i = 4; i < 8; ++i) {
-        color(i + 2);
+        color(i + 2,-1);
         printf("%s", endInterface[i]);
     }
     gotoxy(34, 6);
@@ -330,11 +330,11 @@ void moveSnake(int flag) {//蛇的正常前进
     pre_y = tail->y;
     //蛇尾,旧蛇头覆盖打印
     gotoxy(tail->x, tail->y);
-    color(7);
+    color(7,-1);
     printf("□");
 
     gotoxy(head->x, head->y);
-    color(6);
+    color(6,-1);
     printf("■");
     //蛇尾断开
     snake *temp = tail;
@@ -349,13 +349,13 @@ void moveSnake(int flag) {//蛇的正常前进
     head->x = head->next->x + move[flag][0];
     head->y = head->next->y + move[flag][1];
     gotoxy(head->x, head->y);
-    color(2);
+    color(2,-1);
     printf("■");
 }
 
 void snakeGrowth() {//蛇的长度增长
     //新增蛇身结点---即在蛇尾新增一个结点并即刻打印(蛇此时已前进一格且吃到苹果
-    tail->next = (snake *) malloc(sizeof(snake));
+    tail->next = (snake *)malloc(sizeof(snake));
     tail->next->prior = tail;
     tail = tail->next;
     tail->next = NULL;
@@ -363,7 +363,7 @@ void snakeGrowth() {//蛇的长度增长
     tail->y = pre_y;
     ++curSnakeLen;//当前长度+1
     gotoxy(pre_x, pre_y);
-    color(6);
+    color(6,-1);
     printf("■");//进行打印
     return;
 }

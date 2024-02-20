@@ -5,7 +5,7 @@
 
 //nemu
 void printMenu() {
-	const char* logo[10] = { "   ________\n",
+	const char *logo[10] = { "   ________\n",
 							 "  / ______ \\    v1.1~~~\n",
 							 " / /      \\ \\                                 ___\n",
 							 " | \\      |_|                                 | | \n",
@@ -18,10 +18,10 @@ void printMenu() {
 	};
 
 	for (int i = 0; i < 10; ++i) {//´òÓ¡±êÌâ
-		color(i + 1);
+		color(i + 1,-1);
 		printf("%s", logo[i]);
 	}
-	const char* select[8] = {
+	const char *select[8] = {
 		"        _______________________________________________\n",
 		"        |                                             |\n",
 		"        |        ÇëÊäÈë±àºÅ:                          |\n",
@@ -32,7 +32,7 @@ void printMenu() {
 		"                    ÇëÊäÈë±àºÅ[1/2]:[ ]"
 	};
 	for (int i = 0; i < 8; ++i) {//´òÓ¡²Ëµ¥
-		color(i + 2);
+		color(i + 2,-1);
 		printf("%s", select[i]);
 	}
 }

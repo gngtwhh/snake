@@ -26,7 +26,8 @@ void destoryGameData();//当前一局游戏结束时释放空间
 
 //system---系统相关的函数
 void gotoxy(int, int);//光标重定位
-void color(int);//设置打印颜色
+void color(int fore, int back);//设置打印颜色
+void resetColor();//重置打印颜色
 int keyboard(int);//无缓冲键盘输入支持
 int getWindowSizeX();//获取控制台窗口宽度
 int getWindowSizeY();//获取控制台窗口高度
