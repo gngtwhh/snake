@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <windows.h>
 #include "snake.h"
 
@@ -46,10 +45,6 @@ void initGame() {//初始化各项数据
     setDifficulty();
     printBox();
     initSnakeAndApple();
-}
-
-void showRank() {
-    ;
 }
 
 void wrongInput() {//处理错误的键盘输入---打印报错信息

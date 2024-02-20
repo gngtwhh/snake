@@ -31,7 +31,7 @@ void clearWindow() {
 }
 
 int keyboard(int pre) {//键盘输入判断
-    char c;
+    int c;
     int n = pre;
     if (_kbhit()) {//检查是否有键盘输入
         c = _getch();//如果有,则进行一次读取
@@ -47,8 +47,9 @@ int keyboard(int pre) {//键盘输入判断
             n = 5;
     }
     rewind(stdin);//fflush(stdin); 刷新缓冲区,在VS2015之后不再起作用(编译成功但无效果)
-    if ((pre == 1 && n == 3) || (pre == 2 && n == 4) || (pre == 3 && n == 1) ||
-        (pre == 4 && n == 2))
+    // if ((pre == 1 && n == 3) || (pre == 2 && n == 4) || (pre == 3 && n == 1) ||
+    //     (pre == 4 && n == 2))
+    if (!((pre + n) & 1))
         return pre;//如果键盘要求蛇180度转向,则转向失败,蛇仍然按照原来的方向前进
     return n;//成功转向,返回下一步前进的方向
 }

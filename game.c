@@ -29,7 +29,7 @@ void printBox() {
     int cur_console_x = getWindowSizeX();
     int cur_console_y = getWindowSizeY();
     // printf("x:%d,y:%d", x, y);
-    //用户自定义地图大小,并进行计算应该生成的各项数据
+    // 用户自定义地图大小,并进行计算应该生成的各项数据
     gotoxy(0, 0);
     setForeColor(15); // 亮白色
     printf("请输入地图大小(包括边界,按回车键确认):\n");
@@ -51,7 +51,7 @@ void printBox() {
         }
     }
 
-    clearWindow();//清屏
+    clearWindow(); // 清屏
 
     gotoxy(0, 0);
     printf("请输入高度:(范围%d~%d):", min_between(cur_console_y / 2 - 1, 15),
@@ -73,9 +73,8 @@ void printBox() {
         }
     }
 
-
-    //+=2的原因是方块字符并非ASCII字符,占用两个字节大小---坐标每次需要+2而不是+1
-    //打印围墙
+    // +=2的原因每次打印2个空格字符
+    // 打印围墙
     clearWindow();//清屏
     setBackColor(28); //绿色地图边界
     for (int i = 0; i < WIDTH * 2; i += 2) {//上下
@@ -91,17 +90,6 @@ void printBox() {
         printf("  ");
     }
     resetColor();
-    /*
-    //打印盒子内部
-    setForeColor(107);
-    for (int j = 1; j <= HEIGHT - 2; j++) {
-        for (int i = 2; i < WIDTH * 2 - 2; i += 2) {
-            gotoxy(i, j);
-            printf("□");
-        }
-        putchar('\n');
-    }
-    */
 }
 
 void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
@@ -129,13 +117,13 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
     maxSnakeLen = (WIDTH - 2) * (HEIGHT - 2);//根据地图大小计算游戏胜利蛇应该达到的长度
 
     // 注:该分支将整条蛇都设置为白色
-    //打印蛇头
+    // 打印蛇头
     temp = head;
     setBackColor(15); //白色蛇头
     gotoxy(temp->x, temp->y);
     printf("  ");
 
-    //打印蛇身
+    // 打印蛇身
     temp = temp->next;
     setBackColor(15); //白色蛇身
     while (NULL != temp) {
@@ -144,14 +132,14 @@ void initSnakeAndApple() {//缺陷:此函数未处理malloc可能的错误
         temp = temp->next;
     }
 
-    //初始化苹果并打印---游戏开局第一个苹果的位置默认为(8,4)
+    // 初始化苹果并打印---游戏开局第一个苹果的位置默认为(8,4)
     apple.x = 8;
     apple.y = 4;
     setBackColor(9); //亮红色
     gotoxy(8, 4);
     printf("  ");
 
-    //记录蛇尾
+    // 记录蛇尾
     pre_x = tail->x;
     pre_y = tail->y;
 }
@@ -175,20 +163,22 @@ void setDifficulty() {
             rewind(stdin);
         }
     }
-    //wait = 1100 - n * 200;
+    // wait = 1100 - n * 200;
     wait = difficulties[n];//设置等待时间
     //初始化分数
     score = 0;
 
-    rewind(stdin);//刷新缓冲区
-    clearWindow();//清屏
+    rewind(stdin); // 刷新缓冲区
+    clearWindow(); // 清屏
 }
 
-//game bejin
+/*
+ * 游戏主循环体,正式进入游戏,退出意味着结束一局游戏
+ */
 void start() {
     int flag = 2, flag2;//初始向左运动
     bool pause_game = false;
-    //打印提示区域
+    /* 打印提示区域 */
     gotoxy(WIDTH * 2 + 4, 3);
     resetColor();
     setForeColor(15);
@@ -199,30 +189,32 @@ void start() {
     while (1) {
         if (againstTheWall() || againstSelf()) {//判断游戏结束
             gameover();//进行游戏结束的处理
-            return;//处理完毕后结束这一局的游戏,跳转回主控制循环
+            return; // 处理完毕后结束这一局的游戏,跳转回主控制循环
         }
-        //打印当前成绩
+        /* 打印当前成绩 */
         gotoxy(WIDTH * 2 + 10, 5);
         resetColor();
         setForeColor(15);
         printf("%d", score);
-        //蛇运动
-        flag2 = flag;//保存当前的前进方向
-        flag = keyboard(flag);//获取新的(可能发生改变的)移动方向
+        /* 蛇运动 */
+        flag2 = flag; // 保存当前的前进方向
+        flag = keyboard(flag); // 获取新的(可能发生改变的)移动方向
         if (flag <= 4)
             moveSnake(flag);
-        else if (flag == 5) {//5代表输入了空格,意味着暂停游戏
-            pause_game = true;//设置暂停标志位
-            flag = flag2;//前进方向重置为原来的方向
+        /* 5 代表输入了空格,意味着暂停游戏 */
+        else if (flag == 5) {
+            pause_game = true; // 设置暂停标志位
+            flag = flag2; // 前进方向重置为原来的方向
         }
-        if (head->x == apple.x && head->y == apple.y) {//吃到苹果
-            snakeGrowth();//蛇长长
+        /* 如果吃到苹果 */
+        if (head->x == apple.x && head->y == apple.y) {
 
+            snakeGrowth(); // 蛇长长
             if (curSnakeLen == maxSnakeLen) {
                 gamewin();//游戏胜利
                 return;
             }
-            //进行下一个苹果的生成(随机)
+            // 进行下一个苹果的生成(随机)
             srand((unsigned int) time(NULL));
             do {
                 apple.x = ((rand() % (WIDTH - 2)) + 1) * 2;
@@ -233,20 +225,20 @@ void start() {
             printf("  ");
             score++;//分数+1
         }
-        if (pause_game) {//如果暂停标志位设置为true则暂停游戏
+        /* 如果暂停标志位设置为true则暂停游戏 */
+        if (pause_game) {
             gotoxy(WIDTH * 2 + 4, 4);
             resetColor();
             setForeColor(15);
             printf("pause    ");
-            char c;
-            while ((c = _getch()) != ' ');//暂停的死循环---直到键入空格,跳出循环,游戏继续
+            while (_getch() != ' '); // 暂停的死循环---直到键入空格,跳出循环,游戏继续
             rewind(stdin);
             pause_game = false;
             gotoxy(WIDTH * 2 + 4, 4);
-            printf("          ");//覆盖暂停提示信息
+            printf("          "); // 覆盖暂停提示信息
         }
-        Sleep(wait);//等待一段时间再继续运行
-        rewind(stdin);//刷新游戏缓冲区
+        Sleep(wait); // 等待一段时间再继续运行
+        rewind(stdin); // 刷新游戏缓冲区
     }
 }
 
@@ -271,7 +263,7 @@ bool againstSelf() {//检查撞到自己即检查蛇头的坐标是否和任一蛇身的坐标重合
 void gameover() {
     resetColor(); // 重置颜色
     clearWindow(); // 清屏
-    gotoxy(0,0); // 光标重定位
+    gotoxy(0, 0); // 光标重定位
     const char *endInterface[8] = {
             "        _______________________________________________\n",
             "        |                                             |\n",
@@ -294,15 +286,14 @@ void gameover() {
         printf("%s", endInterface[i]);
     }
     gotoxy(34, 6);
-    char c;
-    while ((c = _getch()) != ' ');//直到键入空格才会返回
+    while (_getch() != ' ');//直到键入空格才会返回
 }
 
 //游戏胜利的处理
 void gamewin() {
     resetColor(); // 重置颜色
     clearWindow(); // 清屏
-    gotoxy(0,0); // 光标重定位
+    gotoxy(0, 0); // 光标重定位
     const char *endInterface[8] = {
             "        _______________________________________________\n",
             "        |                                             |\n",
@@ -325,8 +316,7 @@ void gamewin() {
         printf("%s", endInterface[i]);
     }
     gotoxy(34, 6);
-    char c;
-    while ((c = _getch()) != ' ');//同样等待输入
+    while (_getch() != ' ');//同样等待输入
 }
 
 void moveSnake(int flag) {//蛇的正常前进

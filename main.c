@@ -1,17 +1,18 @@
-/*
-更新内容:
-    补全大量注释,并进行一些细节的修改,修复内存泄漏的漏洞(未销毁链表)
-*/
+// Author: WAHAHA
+// Update: 2024-02-20
+// Overview: A pure console simple snake game,
+//     based on ANSI terminal control code drawing
+
 #include <stdio.h>
 #include <conio.h>
-#include <stdlib.h>
 #include "snake.h"//包含了所有的函数声明,和为了与c++兼容设置的bool宏
+
 int main() {
     printMenu();//第一次进入循环前先初始化一次菜单
-    char c;
+    int c;
     while (1) {//控制主循环
         gotoxy(37, 17);//定位到输入栏
-        c = _getch();//vs2022要求将getch()更换为_getch()---标准c编译器换回getch()(?)
+        c = _getch(); // 无回显输入
         if (c == '1') {
             initGame();//游戏数据初始化
             start();//正式开始一局游戏
